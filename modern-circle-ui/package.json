@@ -1,0 +1,33 @@
+{
+  "name": "modern-circle-ui",
+  "version": "0.1.0",
+  "private": false,
+  "author": "rempei-okada",
+  "license": "MIT",
+  "devDependencies": {
+    "@fitbit/sdk": "~5.0.1",
+    "@fitbit/sdk-cli": "^1.7.3",
+    "fitbit-sdk-types": "^6.0.2"
+  },
+  "fitbit": {
+    "appUUID": "a442a8df-6452-4f29-a605-5dbc32c2e6b8",
+    "appType": "clockface",
+    "appDisplayName": "Modern Circle UI",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "#09cddb",
+    "requestedPermissions": [
+      "access_activity",
+      "access_heart_rate"
+    ],
+    "buildTargets": [
+      "atlas",
+      "vulcan"
+    ],
+    "i18n": {},
+    "defaultLanguage": "en-US"
+  },
+  "scripts": {
+    "build": "fitbit-build",
+    "debug": "fitbit"
+  }
+}

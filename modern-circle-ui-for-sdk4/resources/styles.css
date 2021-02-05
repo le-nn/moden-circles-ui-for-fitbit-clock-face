@@ -1,0 +1,38 @@
+.defaultText {
+  font-size: 32;
+  font-family: System-Regular;
+  font-weight: regular;
+  text-length: 32;
+}
+
+#background {
+  width: 100%;
+  height: 100%;
+  fill: rgb(16,16,16);
+}
+
+.clock-text{
+  font-size: 28;
+  font-family: System-Regular;
+  font-weight: regular;
+  text-length: 12;
+}
+
+.small{
+  font-size: 20;
+  font-weight: regular;
+}
+
+.stats-text{
+  font-size: 20;
+  font-family: System-Bold;
+  font-weight: bold;
+  text-length: 6;
+}
+
+.stats-unit-text{
+  font-size: 14;
+  font-family: System-Bold;
+  font-weight: bold;
+  text-length: 4;
+}

@@ -1,0 +1,102 @@
+<svg>
+  <rect id="background" />
+
+  <!-- Clock -->
+  <g transform="translate(20,20)">
+    <arc x="1" y="1" width="137" height="137" arc-width="6" fill="#262626" start-angle="0" sweep-angle="360" />
+    <arc id="arcSec" x="0" y="0" width="140" height="140" fill="white" arc-width="8" start-angle="0"
+      sweep-angle="180" />
+    <arc x="9" y="9" width="121" height="121" fill="#262626" arc-width="6" start-angle="0" sweep-angle="360" />
+    <arc id="arcMin" x="8" y="8" width="124" height="124" fill="white" arc-width="8" start-angle="0"
+      sweep-angle="280" />
+    <arc x="17" y="17" width="105" height="105" fill="#262626" arc-width="6" start-angle="0" sweep-angle="360" />
+    <arc id="arcHour" x="16" y="16" width="108" height="108" fill="white" arc-width="8" start-angle="0"
+      sweep-angle="240" />
+  </g>
+
+  <text id="dateText" class="clock-text small" x="16" y="186" fill="white">01/01 SUN</text>
+  <text id="timeText" class="clock-text" x="16" y="224" fill="white">00 : 00</text>
+
+  <!-- Stats -->
+  <g transform="translate(176,28)">
+    <image id="stepsIcon" width="24" height="24" x="0" y="0" href="archive/stat_steps_solid_24px.png" fill="white">
+    </image>
+    <text class="stats-text" id="stepsText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-unit-text" x="86" y="17" fill="white">Steps</text>
+  </g>
+  <g transform="translate(176,60)">
+    <image id="calIcon" width="24" height="24" x="0" y="0" href="archive/stat_cals_open_32px.png" fill="white">
+    </image>
+    <text class="stats-text" id="calText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-unit-text" x="86" y="17" fill="white">Kcal</text>
+  </g>
+  <g transform="translate(176,94)">
+    <image id="distIcon" width="24" height="24" x="0" y="0" href="archive/stat_dist_open_32px.png" fill="white">
+    </image>
+    <text class="stats-text" id="distText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-unit-text" x="86" y="17" fill="white">m</text>
+  </g>
+  <g transform="translate(176,124)">
+    <image id="floorIcon" width="24" height="24" x="0" y="0" href="archive/stat_floors_open_32px.png" fill="white">
+    </image>
+    <text class="stats-text" id="floorText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-unit-text" x="86" y="17" fill="white">elevation</text>
+  </g>
+
+  <!-- stat circles -->
+  <!-- orientation -->
+  <g transform="translate(160,166)">
+    <arc x="0" y="0" width="48" height="48" arc-width="4" fill="#262626" start-angle="0" sweep-angle="360" />
+    <arc id="heightArc" x="0" y="0" width="48" height="48" fill="white" arc-width="4" start-angle="0" sweep-angle="360" />
+    <text id="heightText" text-length="5" font-size="14" x="5" y="28" fill="white"></text>
+    <text  font-size="14" x="-4" y="62" fill="white">Altimeter</text>
+  </g>
+  <!-- hPa -->
+  <g transform="translate(220,166)">
+    <arc x="0" y="0" width="48" height="48" arc-width="4" fill="#262626" start-angle="0" sweep-angle="360" />
+    <arc id="hPaArc" x="0" y="0" width="48" height="48" fill="white" arc-width="4" start-angle="0" sweep-angle="360" />
+   <image id="hPaIcon" width="20" height="20" x="12" y="12" href="archive/stat_elevation_32px_p.png" fill="white">
+    </image>
+    <text id="hPaText" font-size="14" x="2" y="62" fill="white">0000hPa</text>
+  </g>
+  <!-- battery -->
+  <g transform="translate(280,166)">
+    <arc x="0" y="0" width="48" height="48" arc-width="4" fill="#262626" start-angle="0" sweep-angle="360" />
+    <arc id="batteryArc" x="0" y="0" width="48" height="48" fill="white" arc-width="4" start-angle="360"
+      sweep-angle="0" />
+    <!-- <image id="floorIcon" width="14" height="14" x="12" y="8" href="battery.png" fill="white">
+      </image> -->
+    <text id="batteryText" font-size="14" x="12" y="28" fill="white">100%</text>
+    <text  font-size="14" x="4" y="62" fill="white">Battery</text>
+  </g>
+
+  <!-- ECG -->
+  <line />
+  <rect x="0" y="236" width="100%" height="1" fill="white" />
+
+  <image id="ecg" y="248" id="ecg" href="ecg.png" fill="white" height="76">
+    <animate id="ecgAnimation1" easing="ease-in-out" repeatCount="indefinite" attributeName="opacity" begin="load"
+      from="0" to="1" dur="1" final="restore" />
+  </image>
+
+  <rect y="248" width="100%" fill="rgb(18,18,18)" height="76">
+    <animate id="ecgAnimation2" easing="ease-in-out" repeatCount="indefinite" attributeName="x" begin="load" from="0"
+      to="100%" dur="1" final="keep" />
+  </rect>
+
+  <rect x="20" width="60" y="242" height="32" fill="#262626"></rect>
+  <rect x="20" width="36" y="243" height="6" fill="white"></rect>
+  <rect x="20" width="18" y="251" height="6" fill="white"></rect>
+  <rect x="20" width="34" y="259" height="6" fill="white"></rect>
+  <rect x="20" width="22" y="267" height="6" fill="white"></rect>
+
+  <rect x="0" y="328" width="100%" height="1" fill="white" />
+
+  <!-- heart rate text -->
+  <g transform="translate(228,244)">
+    <image id="heartRateIcon" width="20" height="20" x="0" y="2" href="archive/stat_hr_solid_24px.png">
+    </image>
+    <text class="stats-text" id="heartRateText" x="32" y="16" fill="white">00</text>
+    <text class="stats-unit-text" x="68" y="16" fill="white">bpm</text>
+  </g>
+</svg>

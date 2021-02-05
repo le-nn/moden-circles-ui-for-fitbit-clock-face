@@ -1,0 +1,33 @@
+{
+  "devDependencies": {
+    "@fitbit/sdk": "~4.2.0",
+    "@fitbit/sdk-cli": "^1.7.3",
+    "fitbit-sdk-types": "^6.0.2"
+  },
+  "fitbit": {
+    "appUUID": "9cea5b27-d8a0-4b82-8a69-d4bdaa610a8c",
+    "appType": "clockface",
+    "appDisplayName": "ECG circle UI",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "",
+    "requestedPermissions": [
+      "access_heart_rate",
+      "access_activity"
+    ],
+    "buildTargets": [
+      "gemini",
+      "mira",
+      "meson"
+    ],
+    "i18n": {
+      "en-US": {
+        "name": "ecg-circle-ui-for-sdk4"
+      }
+    },
+    "defaultLanguage": "en-US"
+  },
+  "scripts": {
+    "build": "fitbit-build",
+    "debug": "fitbit"
+  }
+}
