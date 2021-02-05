@@ -33,7 +33,8 @@ The pink circle represents the short hands of the clock (sec).
 The light green circle represents the long hands of a clock (min).
 The blue circle represents the short hands of the clock (hour).
 
-All colors can be changed from the settings
+All colors can be changed from the settings.
+If you are using an unsupported sensor, ```NONE``` will be displayed.
 
 ### Development 
 
