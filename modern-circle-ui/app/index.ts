@@ -15,41 +15,9 @@ import { OrientationSensor as Orientation } from "orientation";
 const SETTINGS_TYPE = "cbor";
 const SETTINGS_FILE = "settings.cbor";
 
-let settings: any = {};
-let onsettingschange = (data: any) => { };
-
-function initialize(callback: (data: any) => void) {
-    settings = loadSettings() as any;
-    onsettingschange = callback;
-    onsettingschange(settings);
-}
-
-// Received message containing settings data
-messaging.peerSocket.addEventListener("message", function (evt) {
-    settings[evt.data.key] = evt.data.value;
-    onsettingschange(settings);
-})
-
-// Register for the unload event
-me.addEventListener("unload", saveSettings);
-
-// Load settings from filesystem
-function loadSettings() {
-    try {
-        return fs.readFileSync(SETTINGS_FILE, SETTINGS_TYPE);
-    } catch (ex) {
-        return {};
-    }
-}
-
-// Save settings to the filesystem
-function saveSettings() {
-    fs.writeFileSync(SETTINGS_FILE, settings, SETTINGS_TYPE);
-}
-
-// ----------------- APP -------------------
-
-let setting = {
+const setting = {
+    altimeterUnit: { values: [{ name: "m" }] },
+    time: { values: [{ name: "24h" }] },
     hoursHand: "#09cddb",
     munutesHand: "#c0ec36",
     secondsHand: "#ec3ba6",
@@ -70,65 +38,35 @@ let setting = {
     heightTextColor: "#09cddb"
 };
 
-initialize(data => {
-    for (const key in data) {
-        if (data[key]) {
-            setting[key] = data[key];
-        }
+const settings: Setting = { ...setting, ...loadSettings() };
+
+// Received message containing settings data
+messaging.peerSocket.addEventListener("message", function (evt) {
+    settings[evt.data.key] = evt.data.value;
+    initialize(settings);
+})
+
+// Register for the unload event
+me.addEventListener("unload", saveSettings);
+
+// Load settings from filesystem
+function loadSettings() {
+    try {
+        return fs.readFileSync(SETTINGS_FILE, SETTINGS_TYPE);
     }
+    catch (ex) {
+        return {};
+    }
+}
 
-    // Colck Colors
-    const arcHour = document.getElementById("arcHour") as GradientArcElement;
-    const arcMin = document.getElementById("arcMin") as GradientArcElement;
-    const arcSec = document.getElementById("arcSec") as GradientArcElement;
-    arcHour.style.fill = setting.hoursHand;
-    arcMin.style.fill = setting.munutesHand;
-    arcSec.style.fill = setting.secondsHand;
+// Save settings to the filesystem
+function saveSettings() {
+    fs.writeFileSync(SETTINGS_FILE, settings, SETTINGS_TYPE);
+}
 
-    // Stats Colors
-    const stepsIcon = document.getElementById("stepsIcon") as TextElement;
-    const stepsText = document.getElementById("stepsText") as TextElement;
-    const calIcon = document.getElementById("calIcon") as TextElement;
-    const calText = document.getElementById("calText") as TextElement;
-    const distIcon = document.getElementById("distIcon") as TextElement;
-    const distText = document.getElementById("distText") as TextElement;
-    const floorIcon = document.getElementById("floorIcon") as TextElement;
-    const floorText = document.getElementById("floorText") as TextElement;
-    stepsIcon.style.fill = setting.stepsColor;
-    stepsText.style.fill = setting.stepsColor;
-    calIcon.style.fill = setting.calColor;
-    calText.style.fill = setting.calColor;
-    distIcon.style.fill = setting.distColor;
-    distText.style.fill = setting.distColor
-    floorIcon.style.fill = setting.elevationColor;
-    floorText.style.fill = setting.elevationColor;
+// ----------------- APP -------------------
 
-    // stats meter color
-    const hPaIcon = document.getElementById("hPaIcon") as ImageElement;
-    const hPaText = document.getElementById("hPaText") as TextElement;
-    const hPaArc = document.getElementById("hPaArc") as GradientArcElement;
-    // const hPaIcon = document.getElementById("hPaIcon") as ImageElement;
-    const batteryText = document.getElementById("batteryText") as TextElement;
-    const batteryArc = document.getElementById("batteryArc") as GradientArcElement;
-
-    const heightText = document.getElementById("heightText") as TextElement;
-    const heightArc = document.getElementById("heightArc") as GradientArcElement;
-
-    batteryText.style.fill = setting.batteryTextColor;
-    batteryArc.style.fill = setting.batteryCircleColor;
-
-    hPaIcon.style.fill = setting.hPaTextColor;
-    hPaText.style.fill = setting.hPaTextColor;
-    hPaArc.style.fill = setting.hPaCircleColor;
-
-    heightText.style.fill = setting.heightTextColor;
-    heightArc.style.fill = setting.heightArcColor;
-
-    // ECG
-    const heartRateIcon = document.getElementById("heartRateIcon") as ImageElement;
-    heartRateIcon.style.fill = setting.heartIconColor;
-
-});
+type Setting = typeof setting;
 
 const days = {
     0: "SUN",
@@ -182,13 +120,26 @@ function clock() {
         arcSec.sweepAngle = secondsToAngle(secs);
 
         dateText.text = `${zeroPad(today.getMonth() + 1, "00")}/${zeroPad(today.getDate(), "00")} ${dayToText(today.getDay())}`;
-        timeText.text = `${zeroPad(today.getHours(), "00")} : ${zeroPad(today.getMinutes(), "00")}`;
+
+        if (settings.time.values[0].name === "12h") {
+            const hours = today.getHours();
+            if (hours <= 12)
+                timeText.text = `${zeroPad(today.getHours(), "00")} : ${zeroPad(today.getMinutes(), "00")} AM`;
+            else
+                timeText.text = `${zeroPad(today.getHours() % 12, "00")} : ${zeroPad(today.getMinutes(), "00")} PM`;
+        }
+        else
+            timeText.text = `${zeroPad(today.getHours(), "00")} : ${zeroPad(today.getMinutes(), "00")}`;
     }
 
     Clock.addEventListener("tick", updateClock);
 }
 
 function zeroPad(n: number, zeros: string) {
+    if (n === null) {
+        return zeros;
+    }
+
     return (zeros + (n.toString())).slice(-zeros.length);
 }
 
@@ -244,17 +195,32 @@ function statsCircle() {
         display.addEventListener("change", () => {
             display.on ? barometer.start() : barometer.stop();
         });
-        barometer.addEventListener("reading", () => {
+
+        const draw = () => {
             hPaText.text = `${Math.floor(barometer.pressure * 0.01)}hPa`;
             hPaArc.sweepAngle = 360 * (barometer.pressure / 1000000);
 
-            heightText.text = `${zeroPad(Math.floor(getHeight(barometer.pressure * 0.01)), "0000")}m`;
+            const unit = settings.altimeterUnit.values[0].name;
+            const w = unit === "m" ? 1 : 3.2808;
+            heightText.text = `${zeroPad(Math.floor(getHeight(barometer.pressure * 0.01) * w), "0000")}${unit}`;
+        }
+
+        barometer.addEventListener("reading", () => {
+            draw();
         });
         barometer.start();
+
+        return {
+            draw
+        }
+    }
+
+    return {
+        draw: () => { }
     }
 }
 
-function ecg() {
+function initEcg() {
     const ecgAnimation1 = document.getElementById("ecgAnimation1") as any;
     const ecgAnimation2 = document.getElementById("ecgAnimation2") as any;
     const heartRateText = document.getElementById("heartRateText") as TextElement;
@@ -262,13 +228,18 @@ function ecg() {
 
     function setEcgHeartRate(rate: number) {
         const len = 60 / rate;
+        if (len === Infinity) {
+            return;
+        }
+
         ecgAnimation1.dur = len;
         ecgAnimation2.dur = len;
     }
 
     if (HeartRateSensor) {
         const hrm = new HeartRateSensor();
-        hrm.addEventListener("reading", () => {
+
+        const draw = () => {
             setEcgHeartRate(hrm.heartRate);
             heartRateText.text = zeroPad(hrm.heartRate, "000");
             ecgImg.style.fill = (() => {
@@ -282,16 +253,96 @@ function ecg() {
                     return setting.normalWaveColor;
                 }
             })();
+        }
+
+        hrm.addEventListener("reading", () => {
+            draw();
         });
         display.addEventListener("change", () => {
             // Automatically stop the sensor when the screen is off to conserve battery
             display.on ? hrm.start() : hrm.stop();
         });
         hrm.start();
+
+        return {
+            draw
+        };
     }
+
+    return {
+        draw: () => { }
+    };
 }
 
-ecg();
+const initialize = (data: Setting) => {
+    for (const key in data) {
+        if (data[key]) {
+            setting[key] = data[key];
+        }
+    }
+
+    // Colck Colors
+    const arcHour = document.getElementById("arcHour") as GradientArcElement;
+    const arcMin = document.getElementById("arcMin") as GradientArcElement;
+    const arcSec = document.getElementById("arcSec") as GradientArcElement;
+    arcHour.style.fill = setting.hoursHand;
+    arcMin.style.fill = setting.munutesHand;
+    arcSec.style.fill = setting.secondsHand;
+
+    // Stats Colors
+    const stepsIcon = document.getElementById("stepsIcon") as TextElement;
+    const stepsText = document.getElementById("stepsText") as TextElement;
+    const calIcon = document.getElementById("calIcon") as TextElement;
+    const calText = document.getElementById("calText") as TextElement;
+    const distIcon = document.getElementById("distIcon") as TextElement;
+    const distText = document.getElementById("distText") as TextElement;
+    const floorIcon = document.getElementById("floorIcon") as TextElement;
+    const floorText = document.getElementById("floorText") as TextElement;
+
+    stepsIcon.style.fill = setting.stepsColor;
+    stepsText.style.fill = setting.stepsColor;
+    calIcon.style.fill = setting.calColor;
+    calText.style.fill = setting.calColor;
+    distIcon.style.fill = setting.distColor;
+    distText.style.fill = setting.distColor
+    floorIcon.style.fill = setting.elevationColor;
+    floorText.style.fill = setting.elevationColor;
+
+    // stats meter color
+    const hPaIcon = document.getElementById("hPaIcon") as ImageElement;
+    const hPaText = document.getElementById("hPaText") as TextElement;
+    const hPaArc = document.getElementById("hPaArc") as GradientArcElement;
+    // const hPaIcon = document.getElementById("hPaIcon") as ImageElement;
+    const batteryIcon = document.getElementById("batteryIcon") as ImageElement;
+    const batteryText = document.getElementById("batteryText") as TextElement;
+    const batteryArc = document.getElementById("batteryArc") as GradientArcElement;
+
+    const heightText = document.getElementById("heightText") as TextElement;
+    const heightArc = document.getElementById("heightArc") as GradientArcElement;
+    const heightIcon = document.getElementById("heightIcon") as ImageElement;
+
+    batteryIcon.style.fill = setting.batteryTextColor;
+    batteryText.style.fill = setting.batteryTextColor;
+    batteryArc.style.fill = setting.batteryCircleColor;
+
+    hPaIcon.style.fill = setting.hPaTextColor;
+    hPaText.style.fill = setting.hPaTextColor;
+    hPaArc.style.fill = setting.hPaCircleColor;
+
+    heightText.style.fill = setting.heightTextColor;
+    heightArc.style.fill = setting.heightArcColor;
+    heightIcon.style.fill = setting.heightTextColor;
+
+    // ECG
+    const heartRateIcon = document.getElementById("heartRateIcon") as ImageElement;
+    heartRateIcon.style.fill = setting.heartIconColor;
+
+    ecgContext.draw();
+    statsContext.draw();
+};
+
+const ecgContext = initEcg();
 clock();
 activity();
-statsCircle();
+const statsContext = statsCircle();
+initialize(settings);
