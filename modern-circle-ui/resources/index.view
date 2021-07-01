@@ -17,22 +17,22 @@
   <!-- Stats -->
   <g transform="translate(176,28)">
     <image id="stepsIcon" width="24" height="24" x="0" y="0" href="archive/stat_steps_solid_24px.png" fill="white"></image>
-    <text class="stats-text" id="stepsText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-text" id="stepsText" x="28" y="18" fill="white">0000</text>
     <text class="stats-unit-text" x="86" y="17" fill="white">Steps</text>
   </g>
   <g transform="translate(176,60)">
     <image id="calIcon" width="24" height="24" x="0" y="0" href="archive/stat_cals_open_32px.png" fill="white"></image>
-    <text class="stats-text" id="calText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-text" id="calText" x="28" y="18" fill="white">0000</text>
     <text class="stats-unit-text" x="86" y="17" fill="white">Kcal</text>
   </g>
   <g transform="translate(176,94)">
     <image id="distIcon" width="24" height="24" x="0" y="0" href="archive/stat_dist_open_32px.png" fill="white"></image>
-    <text class="stats-text" id="distText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-text" id="distText" x="28" y="18" fill="white">0000</text>
     <text class="stats-unit-text" x="86" y="17" fill="white">m</text>
   </g>
   <g transform="translate(176,124)">
     <image id="floorIcon" width="24" height="24" x="0" y="0" href="archive/stat_floors_open_32px.png" fill="white"></image>
-    <text class="stats-text" id="floorText" x="40" y="18" fill="white">0000</text>
+    <text class="stats-text" id="floorText" x="28" y="18" fill="white">0000</text>
     <text class="stats-unit-text" x="86" y="17" fill="white">elevation</text>
   </g>
 

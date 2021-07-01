@@ -154,10 +154,10 @@ function activity() {
     const floorText = document.getElementById("floorText") as TextElement;
 
     function renderText() {
-        calText.text = zeroPad(today.local.calories, "0000");
-        stepsText.text = zeroPad(today.local.steps, "0000");
-        distText.text = zeroPad(today.local.distance, "0000");
-        floorText.text = zeroPad(today.local.elevationGain, "0000");
+        calText.text = zeroPad(today.local.calories, "00000");
+        stepsText.text = zeroPad(today.local.steps, "00000");
+        distText.text = zeroPad(today.local.distance, "00000");
+        floorText.text = zeroPad(today.local.elevationGain, "00000");
     }
 
     display.addEventListener("change", () => {
